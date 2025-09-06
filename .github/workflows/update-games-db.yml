@@ -1,0 +1,21 @@
+name: Update Games Every 1 Hours
+
+on:
+  schedule:
+    - cron: '0 */1 * * *' # runs 00:00, 06:00, 12:00, 18:00 UTC
+  workflow_dispatch: # allow manual run
+
+jobs:
+  hit-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Games DB
+        run: |
+          # Send an empty JSON body {} because your handler calls request.json()
+          # and will throw if there is no body.
+          curl --fail --silent --show-error \
+            --retry 3 --retry-all-errors \
+            -X GET "$UPDATE_GAMES_URL" \
+            -H "Content-Type: application/json"
+        env:
+          UPDATE_GAMES_URL: https://www.cyberspacestore.id/api/update-games
